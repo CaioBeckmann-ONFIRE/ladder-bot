@@ -27,7 +27,11 @@ module.exports = async function fetchLadderRanking() {
     body: JSON.stringify(query)
   });
 
-  if (!res.ok) return '❌ Erro ao buscar ranking da Ladder.';
+if (!res.ok) {
+  const errorText = await res.text();
+  console.error('Erro na API:', res.status, errorText);
+  return `❌ Erro ${res.status}: ${errorText}`;
+}
 
   const data = await res.json();
   const { name, placementsPage } = data.data.ladder;
