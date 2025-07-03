@@ -9,7 +9,6 @@ module.exports = async function fetchLadderRanking() {
           name
           placementsPage(first: 10) {
             nodes {
-              rank
               score
               user {
                 username
@@ -27,11 +26,11 @@ module.exports = async function fetchLadderRanking() {
     body: JSON.stringify(query)
   });
 
-if (!res.ok) {
-  const errorText = await res.text();
-  console.error('Erro na API:', res.status, errorText);
-  return `❌ Erro ${res.status}: ${errorText}`;
-}
+  if (!res.ok) {
+    const errText = await res.text();
+    console.error('Erro na API:', res.status, errText);
+    return `❌ Erro ${res.status}: ${errText}`;
+  }
 
   const data = await res.json();
   const { name, placementsPage } = data.data.ladder;
@@ -39,7 +38,7 @@ if (!res.ok) {
 
   let message = `**🏆 Ranking da Ladder ${name}**\n\n`;
   players.forEach((e, i) => {
-    const prefix = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `**${e.rank}.**`;
+    const prefix = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `**${i + 1}.**`;
     message += `${prefix} ${e.user.username} – ${e.score} pts\n`;
   });
 
