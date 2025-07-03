@@ -24,6 +24,7 @@ client.once('ready', () => {
 
 // Comando manual !ranking
 client.on('messageCreate', async (message) => {
+  // Ignora mensagens fora do canal autorizado para comandos
   if (message.channel.id !== process.env.COMMANDS_CHANNEL_ID) return;
 
   if (message.content === '!ranking' && !message.author.bot) {
@@ -33,6 +34,7 @@ client.on('messageCreate', async (message) => {
     await loadingMessage.delete();
   }
 });
+
 
 
 
