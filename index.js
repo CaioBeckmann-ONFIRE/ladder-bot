@@ -2,6 +2,7 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const cron = require('node-cron');
 const fetchLadderRanking = require('./fetchLadder');
 require('dotenv').config();
+console.log(`[DEBUG INIT] PID: ${process.pid} - Iniciando bot em ${__filename}`);
 
 const client = new Client({
   intents: [
