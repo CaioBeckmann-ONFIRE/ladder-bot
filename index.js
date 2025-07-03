@@ -32,18 +32,34 @@ client.once('ready', () => {
 
 // Comandos manuais
 client.on('messageCreate', async (message) => {
-  if (message.author.bot) return;
-  if (message.channel.id !== process.env.COMMANDS_CHANNEL_ID) return;
+  console.log(`[EVENT] messageCreate recebida. Content: "${message.content}" ChannelID: ${message.channel.id}`);
 
-  // !ranking
-  else if (message.content === '!ranking') {
+  if (message.author.bot) {
+    console.log(`[FILTER] Ignorado por autor bot.`);
+    return;
+  }
+
+  if (message.channel.id !== process.env.COMMANDS_CHANNEL_ID) {
+    console.log(`[FILTER] Ignorado por canal (${message.channel.id}).`);
+    return;
+  }
+
+  if (message.content === '!ranking') {
+    console.log(`[ACTION] Executando !ranking`);
+
     const hash = `${message.channel.id}-${message.id}`;
-    if (responded.has(hash)) return;
+    if (responded.has(hash)) {
+      console.log(`[GUARD] Já respondeu essa msg antes.`);
+      return;
+    }
+
     responded.add(hash);
 
     try {
-      const loadingMessage = await message.channel.send('🔄 Buscando ranking da Ladder...');
+      console.log(`[ACTION] Chamando fetchLadderRanking()`);
       const ranking = await fetchLadderRanking();
+      console.log(`[ACTION] Fazendo send do ranking`);
+      const loadingMessage = await message.channel.send('🔄 Buscando ranking da Ladder...');
       await message.channel.send(ranking);
       await loadingMessage.delete();
     } catch (error) {
@@ -51,15 +67,8 @@ client.on('messageCreate', async (message) => {
       message.channel.send('❌ Ocorreu um erro ao buscar o ranking.');
     }
   }
-
-  // !debug
-  else if (message.content === '!debug') {
-    const now = new Date();
-    const resposta = `🛠️ Esta instância está ativa\nPID: ${process.pid}\nHorário: ${now.toLocaleTimeString('pt-BR')}`;
-    console.log(`[DEBUG] !debug chamado por ${message.author.tag} em ${message.channel.name}`);
-    await message.channel.send(resposta);
-  }
 });
+
 
 
 client.login(process.env.BOT_TOKEN);
