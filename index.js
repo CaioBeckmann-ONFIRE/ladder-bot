@@ -30,25 +30,34 @@ client.once('ready', () => {
   });
 });
 
-// Comando manual !ranking (somente no canal de comandos)
+// Comandos manuais
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
   if (message.channel.id !== process.env.COMMANDS_CHANNEL_ID) return;
-  if (message.content !== '!ranking') return;
 
-  // Verifica se essa mensagem já foi respondida
-  const hash = `${message.channel.id}-${message.id}`;
-  if (responded.has(hash)) return;
-  responded.add(hash);
+  // !ranking
+  if (message.content === '!ranking') {
+    const hash = `${message.channel.id}-${message.id}`;
+    if (responded.has(hash)) return;
+    responded.add(hash);
 
-  try {
-    const loadingMessage = await message.channel.send('🔄 Buscando ranking da Ladder...');
-    const ranking = await fetchLadderRanking();
-    await message.channel.send(ranking);
-    await loadingMessage.delete();
-  } catch (error) {
-    console.error('Erro no comando !ranking:', error);
-    message.channel.send('❌ Ocorreu um erro ao buscar o ranking.');
+    try {
+      const loadingMessage = await message.channel.send('🔄 Buscando ranking da Ladder...');
+      const ranking = await fetchLadderRanking();
+      await message.channel.send(ranking);
+      await loadingMessage.delete();
+    } catch (error) {
+      console.error('Erro no comando !ranking:', error);
+      message.channel.send('❌ Ocorreu um erro ao buscar o ranking.');
+    }
+  }
+
+  // !debug
+  if (message.content === '!debug') {
+    const now = new Date();
+    const resposta = `🛠️ Esta instância está ativa\nPID: ${process.pid}\nHorário: ${now.toLocaleTimeString('pt-BR')}`;
+    console.log(`[DEBUG] !debug chamado por ${message.author.tag} em ${message.channel.name}`);
+    await message.channel.send(resposta);
   }
 });
 
