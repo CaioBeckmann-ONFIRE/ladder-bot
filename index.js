@@ -36,7 +36,7 @@ client.on('messageCreate', async (message) => {
   if (message.channel.id !== process.env.COMMANDS_CHANNEL_ID) return;
 
   // !ranking
-  if (message.content === '!ranking') {
+  else if (message.content === '!ranking') {
     const hash = `${message.channel.id}-${message.id}`;
     if (responded.has(hash)) return;
     responded.add(hash);
@@ -53,12 +53,13 @@ client.on('messageCreate', async (message) => {
   }
 
   // !debug
-  if (message.content === '!debug') {
+  else if (message.content === '!debug') {
     const now = new Date();
     const resposta = `🛠️ Esta instância está ativa\nPID: ${process.pid}\nHorário: ${now.toLocaleTimeString('pt-BR')}`;
     console.log(`[DEBUG] !debug chamado por ${message.author.tag} em ${message.channel.name}`);
     await message.channel.send(resposta);
   }
 });
+
 
 client.login(process.env.BOT_TOKEN);
